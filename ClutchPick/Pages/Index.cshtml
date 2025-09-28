@@ -1,0 +1,53 @@
+﻿@page
+@model IndexModel
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/index.css" />
+
+<section class="hero py-5">
+    <div class="container d-flex flex-column gap-4">
+        @if (!User.Identity.IsAuthenticated)
+{
+    <div class="auth-card">
+        <h2>Join the League!</h2>
+        <a class="btn btn-primary" asp-page="/Index" asp-route-handler="Login">
+            Login / Register with Discord
+        </a>
+    </div>
+}
+else
+{
+    <div class="auth-card">
+        <h2>Welcome back, @User.Identity.Name!</h2>
+        <a class="btn btn-primary" asp-page="/Dashboard">
+            Go to My Dashboard
+        </a>
+    </div>
+}
+
+
+
+        <div class="top-players-section p-4 border rounded shadow-sm">
+            <h2 class="mb-3">Top Fantasy Players</h2>
+            @if (Model.TopPlayers.Count > 0)
+            {
+                <ol class="list-group list-group-numbered">
+                    @foreach (var player in Model.TopPlayers)
+                    {
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            @player.InGameName
+                            <span class="badge bg-primary rounded-pill">@player.WeekPoints points</span>
+                        </li>
+                    }
+                </ol>
+            }
+            else
+            {
+                <p>No fantasy points recorded yet for this week.</p>
+            }
+        </div>
+
+    </div>
+</section>
+
+<!-- Optional: FontAwesome for Discord icon -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />

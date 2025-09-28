@@ -1,0 +1,70 @@
+﻿@page
+@model ClutchPick.Pages.ScoringModel
+@{
+    ViewData["Title"] = "Scoring";
+}
+
+<section class="scoring py-5">
+    <div class="container">
+        
+        <!-- Back/Login Button -->
+        <div class="mb-3">
+            @if (User.Identity?.IsAuthenticated ?? false)
+            {
+                <a asp-page="/Dashboard" class="btn btn-secondary">&larr; Back to Dashboard</a>
+            }
+            else
+            {
+                <a href="/Index" class="btn btn-primary">Back to Home</a>
+            }
+        </div>
+
+
+        <h1>How Scoring Works</h1>
+        <p>Here's how points are calculated for each player:</p>
+
+        <table class="table table-striped table-dark">
+            <thead>
+                <tr>
+                    <th>Action</th>
+                    <th>Points</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Goal</td>
+                    <td>5</td>
+                    <td>Each goal scored by the player</td>
+                </tr>
+                <tr>
+                    <td>Assist</td>
+                    <td>2</td>
+                    <td>Each assist made by the player</td>
+                </tr>
+                <tr>
+                    <td>Save</td>
+                    <td>3</td>
+                    <td>Each save made by the player</td>
+                </tr>
+                <tr>
+                    <td>Shot on goal</td>
+                    <td>.5</td>
+                    <td>Each shot made by the player</td>
+                </tr>
+                <tr>
+                    <td>Game Win</td>
+                    <td>3</td>
+                    <td>If the player's team' wins the game</td>
+                </tr>
+                <tr>
+                    <td>Series Sweep Bonus</td>
+                    <td>10</td>
+                    <td>Bonus for sweeping the series</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>All points are automatically calculated weekly based on the games played.</p>
+    </div>
+</section>

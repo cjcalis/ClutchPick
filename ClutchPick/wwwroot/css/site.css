@@ -1,0 +1,157 @@
+/* Global */
+html, body {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Orbitron', sans-serif;
+    background-color: #0a0a0a;
+    color: #f5f5f5;
+}
+
+a {
+    color: #258cfb;
+    text-decoration: none;
+    transition: color 0.2s ease-in-out;
+}
+
+    a:hover {
+        color: #1a7ed6;
+    }
+
+/* Navbar / Header */
+.navbar {
+    background: linear-gradient(90deg, #00172d, #04254e);
+    padding: 0.75rem 1rem;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1030;
+    box-shadow: 0 0 15px rgba(0, 242, 255, 0.3);
+}
+
+.navbar-brand {
+    font-weight: 700;
+    color: #ff7300 !important;
+    font-size: 1.5rem;
+    text-shadow: 0 0 6px rgba(255, 115, 0, 0.7);
+}
+
+.navbar-nav .nav-item .nav-link {
+    color: #f5f5f5 !important;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    transition: color 0.2s ease-in-out, text-shadow 0.2s ease-in-out;
+}
+
+    .navbar-nav .nav-item .nav-link:hover {
+        color: #00f2ff !important;
+        text-shadow: 0 0 8px #00f2ff;
+    }
+
+.navbar-nav .btn-info {
+    background: linear-gradient(90deg, #00f2ff, #007dff);
+    color: #000;
+    font-weight: bold;
+    border-radius: 0.5rem;
+    box-shadow: 0 0 12px rgba(0, 242, 255, 0.5);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+    .navbar-nav .btn-info:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0 18px rgba(0, 242, 255, 0.8);
+    }
+
+main.flex-fill {
+    flex: 1 0 auto;
+    padding-top: 70px;
+    padding-bottom: 80px; 
+}
+
+/* Footer */
+footer.footer {
+    background: linear-gradient(90deg, #00172d, #04254e);
+    color: #c0c0c0;
+    padding: 1.2rem 0;
+    width: 100%;
+    text-align: center;
+    border-top: 2px solid #00f2ff;
+    box-shadow: 0 -3px 10px rgba(0, 242, 255, 0.2);
+    z-index: 1020;
+}
+
+    footer.footer a {
+        color: #00f2ff;
+        transition: color 0.2s ease-in-out, text-shadow 0.2s ease-in-out;
+    }
+
+        footer.footer a:hover {
+            color: #007dff;
+            text-shadow: 0 0 6px #00f2ff;
+        }
+
+/* Cards */
+.card {
+    border-radius: 0.75rem;
+    box-shadow: 0 0 15px rgba(0, 242, 255, 0.15);
+    background: linear-gradient(180deg, #0d1224, #0a0d18);
+    margin-bottom: 1.5rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+    .card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 0 25px rgba(0, 242, 255, 0.4);
+    }
+
+/* Buttons */
+.btn {
+    border-radius: 0.5rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-success {
+    background-color: #28a745;
+    border: none;
+    color: #fff;
+}
+
+    .btn-success:hover {
+        background-color: #218838;
+        transform: translateY(-2px);
+        box-shadow: 0 0 12px rgba(33, 136, 56, 0.6);
+    }
+
+/* Tables */
+.table {
+    background: rgba(10, 15, 30, 0.9);
+    border-radius: 10px;
+    overflow: hidden;
+    color: #f0f0f0;
+}
+
+    .table thead {
+        background: linear-gradient(90deg, #00f2ff, #007dff);
+        color: #000;
+        font-weight: bold;
+    }
+
+.table-hover tbody tr:hover {
+    background: rgba(0, 242, 255, 0.1);
+}
+
+/* Search / Sort Inputs */
+#playerSearch, #sortPlayers {
+    border: 1px solid rgba(0, 242, 255, 0.4);
+    background: rgba(10, 15, 30, 0.8);
+    color: #e0e0e0;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+    #playerSearch:focus, #sortPlayers:focus {
+        outline: none;
+        border-color: #00f2ff;
+        box-shadow: 0 0 8px rgba(0, 242, 255, 0.6);
+    }

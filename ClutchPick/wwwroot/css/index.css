@@ -1,0 +1,83 @@
+﻿body {
+    background: radial-gradient(circle at top, #0a0f1f, #05060a);
+    color: #e0e0e0;
+    font-family: 'Orbitron', 'Segoe UI', sans-serif;
+    margin: 0;
+    padding: 0;
+    padding-bottom: 60px;
+}
+
+h1, h2, h3, h4 {
+    font-family: 'Orbitron', 'Segoe UI', sans-serif;
+    color: #00f2ff;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Cards / Panels */
+.card {
+    background: linear-gradient(180deg, #0d1224, #0a0d18);
+    border: 1px solid rgba(0, 242, 255, 0.2);
+    box-shadow: 0 0 15px rgba(0, 242, 255, 0.15);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+    .card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 0 25px rgba(0, 242, 255, 0.4);
+    }
+
+.player-detail {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+}
+
+/* Buttons */
+.btn-primary {
+    background: linear-gradient(90deg, #00f2ff, #007dff);
+    border: none;
+    color: #000;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-radius: 8px;
+    box-shadow: 0 0 12px rgba(0, 242, 255, 0.5);
+}
+
+    .btn-primary:hover {
+        background: linear-gradient(90deg, #007dff, #00f2ff);
+        box-shadow: 0 0 20px rgba(0, 242, 255, 0.8);
+    }
+
+.btn-danger {
+    background: linear-gradient(90deg, #ff4b2b, #ff416c);
+    border: none;
+    box-shadow: 0 0 12px rgba(255, 65, 108, 0.6);
+}
+
+    .btn-danger:hover {
+        box-shadow: 0 0 18px rgba(255, 65, 108, 0.8);
+    }
+
+/* Tables */
+.table {
+    background: rgba(10, 15, 30, 0.9);
+    border-radius: 10px;
+    overflow: hidden;
+    color: #f0f0f0;
+}
+
+    .table thead {
+        background: linear-gradient(90deg, #00f2ff, #007dff);
+        color: #000;
+        font-weight: bold;
+    }
+
+.table-hover tbody tr:hover {
+    background: rgba(0, 242, 255, 0.1);
+}
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(224,224,224,1)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+}
+

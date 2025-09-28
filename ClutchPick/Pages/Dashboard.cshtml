@@ -1,0 +1,312 @@
+﻿@page
+@model DashboardModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true" />
+
+<section class="dashboard py-5">
+    <div class="container">
+
+        <!-- User Info -->
+        <div class="user-info d-flex align-items-center mb-4 gap-3">
+            <img src="@Model.DiscordAvatarUrl" class="rounded-circle" width="60" height="60" />
+            <h2>Welcome, @Model.DiscordName</h2>
+        </div>
+
+        <!-- Week Tabs -->
+        <ul class="nav nav-tabs mb-4" id="weekTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="current-week-tab" data-bs-toggle="tab" data-bs-target="#current-week" type="button" role="tab">Current Week</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="next-week-tab" data-bs-toggle="tab" data-bs-target="#next-week" type="button" role="tab">Next Week</button>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+
+            <!-- Current Week -->
+            <div class="tab-pane fade show active" id="current-week" role="tabpanel"> 
+
+                <div class="week-info mb-4 d-flex justify-content-between align-items-center">
+                    <h3>Week @Model.CurrentWeek.WeekNumber</h3>
+                </div>
+
+                <div class="row gap-4">
+                    <div class="col-md-6">
+                        <div class="card p-3 shadow-sm">
+                            <h4>My Lineup</h4>
+                            <ul class="list-group list-group-flush">
+                                @for (int i = 0; i < DashboardModel.MaxSlots; i++)
+                                {
+                                    if (i < Model.CurrentWeekLineup.Count)
+                                    {
+                                        var player = Model.CurrentWeekLineup[i];
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            <span>
+                                                <a href="/PlayerDetail?PlayerID=@player.PlayerID">@player.InGameName</a>
+                                            </span>
+                                            <span><strong>@player.WeekPoints</strong> pts</span>
+                                        </li>
+                                    }
+                                    else
+                                    {
+                                        <li class="list-group-item text-center text-muted">Empty Slot</li>
+                                    }
+                                }
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="card p-3 shadow-sm">
+                            <h4>Leaderboard</h4>
+                            <p class="text-muted">Not wired up yet</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Next Week -->
+            <div class="tab-pane fade" id="next-week" role="tabpanel">
+                <div class="week-info mb-4 d-flex justify-content-between align-items-center">
+                    <h3>Next Week (Week @Model.NextWeek?.WeekNumber)</h3>
+                    <p class="mb-0">Budget Remaining: $<span id="modalBudget">@Model.NextWeekBudget</span></p>
+                </div>
+
+                <div class="row gap-4">
+                    <div class="col-md-6">
+                        <div class="card p-3 shadow-sm">
+                            <h4>My Next Week Lineup</h4>
+                            <ul class="list-group list-group-flush">
+                                @for (int i = 0; i < DashboardModel.MaxSlots; i++)
+                                {
+                                    if (i < Model.NextWeekLineup.Count)
+                                    {
+                                        var player = Model.NextWeekLineup[i];
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            <span>
+                                                <a href="/PlayerDetail?PlayerID=@player.PlayerID">@player.InGameName</a>
+                                            </span>
+                                            <span>
+                                                <strong>@player.WeekPoints</strong> pts
+                                                <form method="post" asp-page-handler="RemoveNextWeekPlayer" class="d-inline ms-2">
+                                                    <input type="hidden" name="AddPlayerID" value="@player.PlayerID" />
+                                                    <button type="submit" class="btn btn-sm btn-danger">Remove</button>
+                                                </form>
+                                            </span>
+                                        </li>
+                                    }
+                                    else
+                                    {
+                                        <li class="list-group-item text-center">
+                                            <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addPlayerModal"
+                                                @(Model.NextWeek?.WeekID == 0 ? "disabled title='Next week not available yet'" : "")>Add Player</button>
+                                        </li>
+                                    }
+                                }
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="card p-3 shadow-sm">
+                            <h4>Leaderboard</h4>
+                            <p class="text-muted">Not wired up yet</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Add Player Modal -->
+<div class="modal fade" id="addPlayerModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-between align-items-center">
+                <h5 class="modal-title">Add a Player</h5>
+                <strong>Budget Remaining: $<span id="modalBudget">@Model.NextWeekBudget</span></strong>
+                <button type="button" class="color-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                @if (Model.NextWeek == null || Model.NextWeek.WeekID == 0)
+                {
+                    <p class="text-center text-muted">Next week not available yet.</p>
+                }
+                else
+                {
+                    <div class="d-flex justify-content-between mb-3">
+                        <input type="text" id="playerSearch" class="form-control w-50 text-white" placeholder="Search player..." onkeyup="filterPlayers()" />
+                        <select id="sortPlayers" class="form-select w-25" onchange="sortPlayers()">
+                            <option value="name-asc">Name ↑</option>
+                            <option value="name-desc">Name ↓</option>
+                            <option value="salary-asc">Salary ↑</option>
+                            <option value="salary-desc">Salary ↓</option>
+                            <option value="rating-desc">Rating ↓</option>
+                        </select>
+                    </div>
+
+                    <div class="table-responsive" style="overflow-x: auto;">
+                        <table class="table table-hover" id="playersTable">
+                            <thead>
+                                <p class="player-click-hint text-white mb-2">
+                                    Tip: Click a player's name to view full stats.
+                                </p>
+                                <tr>
+                                    <th class="text-white">Player</th>
+                                    <th>Action</th>
+                                    <th>Salary</th>
+                                    <th>Rating</th>
+                                    <th>League</th>
+                                    <th>Team</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var player in Model.AvailablePlayers)
+                                {
+                                    var isOnRoster = Model.NextWeekLineup.Any(p => p.PlayerID == player.PlayerID);
+                                    var overBudget = player.Salary > Model.NextWeekBudget;
+                                    <tr class="@(isOnRoster ? "table-secondary" : overBudget ? "table-danger text-white" : "")">
+                                        <td class="player-name">
+                                           <a href="/PlayerDetail?PlayerID=@player.PlayerID">@player.InGameName</a>
+                                            <small class="text-white">@player.OpponentTeamName</small>
+                                        </td>
+                                        <td>
+                                            @if (!isOnRoster && !overBudget)
+                                            {
+                                                <form method="post" asp-page-handler="AddNextWeekPlayer">
+                                                    <input type="hidden" name="AddPlayerID" value="@player.PlayerID" />
+                                                    <button type="submit" class="btn btn-sm btn-success">Add</button>
+                                                </form>
+                                            }
+                                            else if (isOnRoster)
+                                            {
+                                                <form method="post" asp-page-handler="RemoveNextWeekPlayer">
+                                                    <input type="hidden" name="AddPlayerID" value="@player.PlayerID" />
+                                                    <button type="submit" class="btn btn-sm btn-danger">Remove</button>
+                                                </form>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-danger">Too Expensive</span>
+                                            }
+                                        </td>
+                                        <td>@player.Salary</td>
+                                        <td>@player.Rating</td>
+                                        <td>@player.League</td>
+                                        <td>@player.Team</td>
+                                        
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div> <!-- /.table-responsive -->
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function filterPlayers() {
+    const input = document.getElementById("playerSearch").value.toLowerCase();
+    const rows = document.querySelectorAll("#playersTable tbody tr");
+    rows.forEach(row => {
+        const name = row.querySelector(".player-name a").innerText.toLowerCase();
+        row.style.display = name.includes(input) ? "" : "none";
+    });
+}
+
+function sortPlayers() {
+    const table = document.getElementById("playersTable");
+    const tbody = table.tBodies[0];
+    const rows = Array.from(tbody.querySelectorAll("tr"));
+
+    const sortValue = document.getElementById("sortPlayers").value;
+    const [key, direction] = sortValue.split("-");
+
+    rows.sort((a, b) => {
+        let aValue, bValue;
+
+        switch (key) {
+            case "name":
+                aValue = a.querySelector(".player-name a").innerText.toLowerCase();
+                bValue = b.querySelector(".player-name a").innerText.toLowerCase();
+                break;
+            case "salary":
+                aValue = parseFloat(a.cells[4].innerText) || 0;
+                bValue = parseFloat(b.cells[4].innerText) || 0;
+                break;
+            case "rating":
+                aValue = parseFloat(a.cells[3].innerText) || 0;
+                bValue = parseFloat(b.cells[3].innerText) || 0;
+                break;
+        }
+
+        if (aValue < bValue) return direction === "asc" ? -1 : 1;
+        if (aValue > bValue) return direction === "asc" ? 1 : -1;
+        return 0;
+    });
+
+    // Re-append sorted rows
+    rows.forEach(row => tbody.appendChild(row));
+}
+
+// Optional: live search + sort update
+document.getElementById("playerSearch").addEventListener("input", filterPlayers);
+document.getElementById("sortPlayers").addEventListener("change", sortPlayers);
+</script>
+<script>
+function filterPlayers() {
+    const input = document.getElementById("playerSearch").value.toLowerCase();
+    const rows = document.querySelectorAll("#playersTable tbody tr");
+    rows.forEach(row => {
+        const name = row.querySelector(".player-name a").innerText.toLowerCase();
+        row.style.display = name.includes(input) ? "" : "none";
+    });
+}
+
+function sortPlayers() {
+    const table = document.getElementById("playersTable");
+    const tbody = table.tBodies[0];
+    const rows = Array.from(tbody.querySelectorAll("tr"));
+
+    const sortValue = document.getElementById("sortPlayers").value;
+    const [key, direction] = sortValue.split("-");
+
+    rows.sort((a, b) => {
+        let aValue, bValue;
+
+        switch (key) {
+            case "name":
+                aValue = a.cells[0].innerText.toLowerCase(); // Player
+                bValue = b.cells[0].innerText.toLowerCase();
+                break;
+            case "salary":
+                aValue = parseFloat(a.cells[1].innerText) || 0; // Salary
+                bValue = parseFloat(b.cells[1].innerText) || 0;
+                break;
+            case "rating":
+                aValue = parseFloat(a.cells[2].innerText) || 0; // Rating
+                bValue = parseFloat(b.cells[2].innerText) || 0;
+                break;
+        }
+
+        if (aValue < bValue) return direction === "asc" ? -1 : 1;
+        if (aValue > bValue) return direction === "asc" ? 1 : -1;
+        return 0;
+    });
+
+    // Re-append sorted rows
+    rows.forEach(row => tbody.appendChild(row));
+}
+
+// Optional: live search + sort update
+document.getElementById("playerSearch").addEventListener("input", filterPlayers);
+document.getElementById("sortPlayers").addEventListener("change", sortPlayers);
+</script>

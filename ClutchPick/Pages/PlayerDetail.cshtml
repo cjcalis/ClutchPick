@@ -1,0 +1,109 @@
+﻿@page
+@model ClutchPick.Pages.Players.PlayerDetailModel
+@{
+    ViewData["Title"] = "Player Details";
+}
+<link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/playerdetail.css" asp-append-version="true" />
+
+<section class="player-detail py-5" data-team="@Model.Player.Team.ToLower().Replace(" ", "_")">
+    <div class="container">
+
+        <!-- Back Button -->
+        <div class="mb-3">
+            <a asp-page="/Dashboard" class="btn btn-secondary">&larr; Back to Dashboard</a>
+        </div>
+
+        <!-- Player Info -->
+        <div class="card p-4 shadow-sm mb-4 bg-dark text-white">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="color-#00f2ff">@Model.Player.InGameName</h4>
+                <form method="post" asp-page-handler="AddPlayer">
+                    <input type="hidden" name="AddPlayerID" value="@Model.Player.PlayerID" />
+                    <!--<button type="submit" class="btn btn-success">Add Player</button>-->
+                </form>
+            </div>
+
+            <p class="player-info">
+                <strong>Team:</strong> @Model.Player.Team <br />
+                <strong>League:</strong> @Model.Player.League <br />
+                <strong>Rating:</strong> @Model.Player.Rating <br />
+                <strong>Salary:</strong> $@Model.Player.Salary
+            </p>
+        </div>
+
+        <!-- Stats Table -->
+        <div class="table-responsive">
+            <h4>Stats Breakdown</h4>
+            <table class="table table-striped table-dark">
+                <thead>
+                    <tr>
+                        <th>Week</th>
+                        <th>Goals</th>
+                        <th>Assists</th>
+                        <th>Saves</th>
+                        <th>Shots</th>
+                        <th>Game Wins</th>
+                        <th>Sweep Bonus</th>
+                        <th>Total Points</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var stat in Model.Stats)
+                    {
+                        <tr>
+                            <td>@stat.WeekNumber</td>
+                            <td>@stat.Goals</td>
+                            <td>@stat.Assists</td>
+                            <td>@stat.Saves</td>
+                            <td>@stat.Shots</td>
+                            <td>@stat.GameWins</td>
+                            <td>@stat.SeriesSweepBonus</td>
+                            <td>@stat.TotalPoints</td>
+                        </tr>
+                    }
+                    @if (!Model.Stats.Any())
+                    {
+                        <tr>
+                            <td colspan="8" class="text-center text-muted">No stats available</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</section>
+
+<!-- Add Player Modal (shown if can't add) -->
+@if (Model.ShowAddModal)
+{
+    <div class="modal fade show" style="display:block;" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">Cannot Add Player</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="window.location.reload();"></button>
+                </div>
+                <div class="modal-body">
+                    <p>@Model.AddPlayerMessage</p>
+                    @if (Model.CanReplacePlayer)
+                    {
+                        <p>Select a player to remove from your lineup:</p>
+                        <form method="post" asp-page-handler="ReplacePlayer">
+                            @foreach (var p in Model.MyLineup)
+                            {
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="RemovePlayerID" value="@p.PlayerID" id="remove_@p.PlayerID" required>
+                                    <label class="form-check-label text-white" for="remove_@p.PlayerID">@p.InGameName ($@p.Salary)</label>
+                                </div>
+                            }
+                            <input type="hidden" name="AddPlayerID" value="@Model.PendingAddPlayerID" />
+                            <button type="submit" class="btn btn-warning">Replace and Add Player</button>
+                        </form>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}
